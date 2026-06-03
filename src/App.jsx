@@ -1,5 +1,5 @@
 import HotelReservation from "./pages/HotelReservation";
-
+// main app
 function App() {
   return <HotelReservation />;
 }
