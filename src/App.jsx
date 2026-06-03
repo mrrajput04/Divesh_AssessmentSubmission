@@ -1,4 +1,4 @@
-import HotelReservation from "./pages/HotelReservation";
+import HotelReservation from "./components/HotelReservation";
 
 function App() {
   return <HotelReservation />;

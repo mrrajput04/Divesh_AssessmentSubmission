@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import Btn from "../components/Btn";
+import Btn from "./Btn";
 
 const FLOORS = 10;
 
@@ -27,7 +27,7 @@ function travelTime(f1, i1, f2, i2) {
 function groupTravelTime(rooms) {
   if (rooms.length <= 1) return 0;
   const sorted = [...rooms].sort((a, b) =>
-    a.floor !== b.floor ? a.floor - b.floor : a.idx - b.idx
+    a.floor !== b.floor ? a.floor - b.floor : a.idx - b.idx,
   );
   const first = sorted[0];
   const last = sorted[sorted.length - 1];
@@ -39,7 +39,7 @@ function combinations(arr, k) {
   const result = [];
   for (let i = 0; i <= arr.length - k; i++) {
     combinations(arr.slice(i + 1), k - 1).forEach((c) =>
-      result.push([arr[i], ...c])
+      result.push([arr[i], ...c]),
     );
     if (result.length > 50000) break;
   }
@@ -94,8 +94,8 @@ function findOptimalRooms(rooms, n) {
 }
 
 const COLORS = {
-  available:    { bg: "#13131a", border: "#2a2a38", color: "#4a4a60" },
-  occupied:     { bg: "#1e1428", border: "#5d4e8a", color: "#8b6fc0" },
+  available: { bg: "#13131a", border: "#2a2a38", color: "#4a4a60" },
+  occupied: { bg: "#1e1428", border: "#5d4e8a", color: "#8b6fc0" },
   "newly-booked": { bg: "#0d2b1a", border: "#27ae60", color: "#27ae60" },
 };
 
@@ -105,10 +105,17 @@ function Room({ floor, idx, status }) {
     <div
       title={`Room ${roomId(floor, idx)} — ${status}`}
       style={{
-        width: 40, height: 38, border: `1px solid ${c.border}`,
-        borderRadius: 5, background: c.bg, color: c.color,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: 10, fontFamily: "inherit",
+        width: 40,
+        height: 38,
+        border: `1px solid ${c.border}`,
+        borderRadius: 5,
+        background: c.bg,
+        color: c.color,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: 10,
+        fontFamily: "inherit",
         transition: "all 0.2s",
         animation: status === "newly-booked" ? "pulse 0.4s ease" : "none",
         flexShrink: 0,
@@ -122,9 +129,14 @@ function Room({ floor, idx, status }) {
 export default function HotelReservation() {
   const [rooms, setRooms] = useState(initRooms);
   const [input, setInput] = useState("");
-  const [msg, setMsg] = useState({ type: "info", text: 'Enter rooms (1–5) and click Book.' });
+  const [msg, setMsg] = useState({
+    type: "info",
+    text: "Enter rooms (1–5) and click Book.",
+  });
 
-  const totalAvail = Object.values(rooms).flat().filter((s) => s === "available").length;
+  const totalAvail = Object.values(rooms)
+    .flat()
+    .filter((s) => s === "available").length;
 
   const bookRooms = useCallback(() => {
     const n = parseInt(input);
@@ -149,11 +161,13 @@ export default function HotelReservation() {
       return;
     }
 
-    selected.forEach((r) => { next[r.floor][r.idx] = "newly-booked"; });
+    selected.forEach((r) => {
+      next[r.floor][r.idx] = "newly-booked";
+    });
 
     const tTime = groupTravelTime(selected);
     const names = [...selected]
-      .sort((a, b) => a.floor !== b.floor ? a.floor - b.floor : a.idx - b.idx)
+      .sort((a, b) => (a.floor !== b.floor ? a.floor - b.floor : a.idx - b.idx))
       .map((r) => roomId(r.floor, r.idx))
       .join(", ");
 
@@ -164,9 +178,9 @@ export default function HotelReservation() {
   const randomOccupancy = () => {
     const next = {};
     for (let f = 1; f <= FLOORS; f++) {
-      next[f] = Array(f === 10 ? 7 : 10).fill(null).map(() =>
-        Math.random() < 0.4 ? "occupied" : "available"
-      );
+      next[f] = Array(f === 10 ? 7 : 10)
+        .fill(null)
+        .map(() => (Math.random() < 0.4 ? "occupied" : "available"));
     }
     setRooms(next);
     setMsg({ type: "info", text: "Random occupancy generated." });
@@ -175,7 +189,7 @@ export default function HotelReservation() {
   const resetAll = () => {
     setRooms(initRooms());
     setInput("");
-    setMsg({ type: "info", text: 'Enter rooms (1–5) and click Book.' });
+    setMsg({ type: "info", text: "Enter rooms (1–5) and click Book." });
   };
 
   return (
@@ -185,28 +199,66 @@ export default function HotelReservation() {
         input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
         input[type=number] { -moz-appearance: textfield; }
       `}</style>
-      <div style={{
-        background: "#0a0a0f", minHeight: "100vh", padding: "28px 32px",
-        fontFamily: "'DM Mono','Courier New',monospace", color: "#e8e8f0",
-      }}>
+      <div
+        style={{
+          background: "#0a0a0f",
+          minHeight: "100vh",
+          padding: "28px 32px",
+          fontFamily: "'DM Mono','Courier New',monospace",
+          color: "#e8e8f0",
+        }}
+      >
         {/* Header */}
-        <div style={{ fontFamily: "Georgia,serif", fontSize: 28, color: "#e8c97a", marginBottom: 2 }}>
+        <div
+          style={{
+            fontFamily: "Georgia,serif",
+            fontSize: 28,
+            color: "#e8c97a",
+            marginBottom: 2,
+          }}
+        >
           Hotel Reservation
         </div>
-        <div style={{ fontSize: 11, color: "#6a6a80", letterSpacing: 2, textTransform: "uppercase", marginBottom: 24 }}>
+        <div
+          style={{
+            fontSize: 11,
+            color: "#6a6a80",
+            letterSpacing: 2,
+            textTransform: "uppercase",
+            marginBottom: 24,
+          }}
+        >
           97 rooms · 10 floors · {totalAvail} available
         </div>
 
         {/* Controls */}
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 28, alignItems: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            flexWrap: "wrap",
+            marginBottom: 28,
+            alignItems: "center",
+          }}
+        >
           <input
-            type="number" min={1} max={5} placeholder="Rooms (1–5)"
-            value={input} onChange={(e) => setInput(e.target.value)}
+            type="number"
+            min={1}
+            max={5}
+            placeholder="Rooms (1–5)"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && bookRooms()}
             style={{
-              background: "#13131a", border: "1px solid #2a2a38", color: "#e8e8f0",
-              padding: "10px 14px", borderRadius: 6, fontFamily: "inherit",
-              fontSize: 13, width: 150, outline: "none",
+              background: "#13131a",
+              border: "1px solid #2a2a38",
+              color: "#e8e8f0",
+              padding: "10px 14px",
+              borderRadius: 6,
+              fontFamily: "inherit",
+              fontSize: 13,
+              width: 150,
+              outline: "none",
             }}
           />
           <Btn label="Book" onClick={bookRooms} primary />
@@ -215,19 +267,46 @@ export default function HotelReservation() {
         </div>
 
         {/* Hotel visualization */}
-        <div style={{ display: "flex", gap: 12, alignItems: "flex-start", overflowX: "auto" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 12,
+            alignItems: "flex-start",
+            overflowX: "auto",
+          }}
+        >
           {/* Lift shaft */}
           <div style={{ flexShrink: 0 }}>
-            <div style={{ fontSize: 9, color: "#6a6a80", textAlign: "center", letterSpacing: 1.5, marginBottom: 6, textTransform: "uppercase" }}>
+            <div
+              style={{
+                fontSize: 9,
+                color: "#6a6a80",
+                textAlign: "center",
+                letterSpacing: 1.5,
+                marginBottom: 6,
+                textTransform: "uppercase",
+              }}
+            >
               Lift
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
               {Array.from({ length: FLOORS }, (_, i) => FLOORS - i).map((f) => (
-                <div key={f} style={{
-                  width: 38, height: 38, background: "#0f1520", border: "1px solid #1a2535",
-                  borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 10, color: "#3a5070", fontWeight: 600,
-                }}>
+                <div
+                  key={f}
+                  style={{
+                    width: 38,
+                    height: 38,
+                    background: "#0f1520",
+                    border: "1px solid #1a2535",
+                    borderRadius: 4,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 10,
+                    color: "#3a5070",
+                    fontWeight: 600,
+                  }}
+                >
                   {f}
                 </div>
               ))}
@@ -237,8 +316,19 @@ export default function HotelReservation() {
           {/* Floors */}
           <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
             {Array.from({ length: FLOORS }, (_, i) => FLOORS - i).map((f) => (
-              <div key={f} style={{ display: "flex", gap: 5, alignItems: "center" }}>
-                <div style={{ fontSize: 9, color: "#6a6a80", width: 24, textAlign: "right", flexShrink: 0 }}>
+              <div
+                key={f}
+                style={{ display: "flex", gap: 5, alignItems: "center" }}
+              >
+                <div
+                  style={{
+                    fontSize: 9,
+                    color: "#6a6a80",
+                    width: 24,
+                    textAlign: "right",
+                    flexShrink: 0,
+                  }}
+                >
                   F{f}
                 </div>
                 {rooms[f].map((s, i) => (
@@ -250,13 +340,24 @@ export default function HotelReservation() {
         </div>
 
         {/* Status */}
-        <div style={{
-          marginTop: 20, padding: "14px 18px", background: "#13131a",
-          border: "1px solid #2a2a38", borderRadius: 8, fontSize: 13, lineHeight: 1.9,
-          maxWidth: 600,
-        }}>
-          {msg.type === "err" && <span style={{ color: "#e05555" }}>{msg.text}</span>}
-          {msg.type === "info" && <span style={{ color: "#6a6a80" }}>{msg.text}</span>}
+        <div
+          style={{
+            marginTop: 20,
+            padding: "14px 18px",
+            background: "#13131a",
+            border: "1px solid #2a2a38",
+            borderRadius: 8,
+            fontSize: 13,
+            lineHeight: 1.9,
+            maxWidth: 600,
+          }}
+        >
+          {msg.type === "err" && (
+            <span style={{ color: "#e05555" }}>{msg.text}</span>
+          )}
+          {msg.type === "info" && (
+            <span style={{ color: "#6a6a80" }}>{msg.text}</span>
+          )}
           {msg.type === "ok" && (
             <>
               Booked: <span style={{ color: "#27ae60" }}>{msg.rooms}</span>
@@ -268,22 +369,49 @@ export default function HotelReservation() {
         </div>
 
         {/* Legend */}
-        <div style={{ display: "flex", gap: 20, marginTop: 16, flexWrap: "wrap" }}>
+        <div
+          style={{ display: "flex", gap: 20, marginTop: 16, flexWrap: "wrap" }}
+        >
           {[
             { label: "Available", bg: "#13131a", border: "#2a2a38" },
-            { label: "Occupied",  bg: "#1e1428", border: "#5d4e8a" },
+            { label: "Occupied", bg: "#1e1428", border: "#5d4e8a" },
             { label: "Just Booked", bg: "#0d2b1a", border: "#27ae60" },
           ].map(({ label, bg, border }) => (
-            <div key={label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11, color: "#6a6a80" }}>
-              <div style={{ width: 12, height: 12, background: bg, border: `1px solid ${border}`, borderRadius: 2 }} />
+            <div
+              key={label}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                fontSize: 11,
+                color: "#6a6a80",
+              }}
+            >
+              <div
+                style={{
+                  width: 12,
+                  height: 12,
+                  background: bg,
+                  border: `1px solid ${border}`,
+                  borderRadius: 2,
+                }}
+              />
               {label}
             </div>
           ))}
         </div>
 
         {/* Travel time info */}
-        <div style={{ marginTop: 16, fontSize: 10, color: "#3a3a50", lineHeight: 1.8 }}>
-          Horizontal: 1 min/room &nbsp;·&nbsp; Vertical: 2 min/floor &nbsp;·&nbsp; Max 5 rooms/booking
+        <div
+          style={{
+            marginTop: 16,
+            fontSize: 10,
+            color: "#3a3a50",
+            lineHeight: 1.8,
+          }}
+        >
+          Horizontal: 1 min/room &nbsp;·&nbsp; Vertical: 2 min/floor
+          &nbsp;·&nbsp; Max 5 rooms/booking
         </div>
       </div>
     </>
